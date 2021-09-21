@@ -1,0 +1,21 @@
+BasedOnStyle: WebKit
+AlignTrailingComments: true
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  BeforeCatch: true
+  BeforeElse: true
+  SplitEmptyRecord: false
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Custom
+BreakConstructorInitializers: AfterColon
+IndentPPDirectives: AfterHash
+NamespaceIndentation: All
+SortIncludes: false
+SpaceInEmptyBlock: false
+SpacesBeforeTrailingComments: 2
+

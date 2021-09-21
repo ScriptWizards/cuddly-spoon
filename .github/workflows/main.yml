@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.name }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {
+            name: "Ubuntu Latest GCC",
+            os: ubuntu-latest, os_short: "Ubuntu",
+            build_type: "Release", cc: "gcc-8", cxx: "g++-8"
+          }
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+        token: ${{ secrets.PAT }}
+
+    - name: Update compilers
+      if: ${{ matrix.config.cc }} == 'gcc' && ${{ matrix.config.os_short }} == 'Ubuntu'
+      shell: bash
+      run: |
+        if [[ ${{ matrix.config.cc }} == 'gcc-8' && ${{ matrix.config.os_short }} == 'Ubuntu' ]]; then
+          sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt-get -yq install g++-8 gcc-8
+        elif [[ ${{ matrix.config.cc }} == 'clang' && ${{ matrix.config.os_short }} == 'Ubuntu' ]]; then
+          sudo apt-get install -y clang-10 lld-10 libc++-10-dev libc++abi-10-dev clang-tools-10
+        elif [[ ${{ matrix.config.os_short }} == 'macOS' ]]; then
+          brew install gcc && brew link gcc && CXX=/usr/local/bin/g++-9
+        fi
+
+    - name: OpenGL / SFML install
+      run: |
+        wget -O sfml.tar.gz https://www.sfml-dev.org/files/SFML-2.5.1-linux-gcc-64-bit.tar.gz
+        mkdir -p sfml
+        tar -xzf sfml.tar.gz -C sfml
+        sudo apt-get -y install freeglut3-dev
+
+    - name: Configure CMake
+      shell: bash
+      run: cmake -Bbuild -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DSFML_ROOT=sfml/SFML-2.5.1/lib/cmake/SFML
+
+    - name: Build
+      shell: bash
+      run: cmake --build build --config $BUILD_TYPE

@@ -1,0 +1,3 @@
+[submodule "SmallGameLibrary"]
+	path = SmallGameLibrary
+	url = git@github.com:ScriptWizards/SmallGameLibrary.git

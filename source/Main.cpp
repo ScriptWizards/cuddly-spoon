@@ -4,13 +4,16 @@
 
 int main(int argc, char** argv)
 {
-    const sgl::Settings settings = {};
+    const sgl::Settings settings = {
+        /* width */ 640,
+        /* height */ 480
+    };
     sgl::Application app(settings);
 
     app.setTitle("CuddlySpoon")
         .setVSync(false)
         .setFPSLimit(60)
-        .setDebug(true);
+        .setDebug(false);
 
     app.add<MyScene>();
     app.setCurrentScene<MyScene>();

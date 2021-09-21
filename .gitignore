@@ -33,3 +33,7 @@
 
 # Folders
 build/
+
+# Project junk
+*.ttf
+imgui.ini

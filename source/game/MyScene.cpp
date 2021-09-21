@@ -30,13 +30,13 @@ void MyScene::onEvent(const sf::Event& event)
 {
     if (event.type == sf::Event::MouseButtonPressed)
     {
-        if (event.mouseButton.button == sf::Mouse::Button::Left)
-        {
-            int x = event.mouseButton.x / PixSize,
-                y = event.mouseButton.y / PixSize;
+        int x = event.mouseButton.x / PixSize,
+            y = event.mouseButton.y / PixSize;
 
+        if (event.mouseButton.button == sf::Mouse::Button::Left)
             m_pixels[x + y * WidthPx] = SandVal;
-        }
+        else if (event.mouseButton.button == sf::Mouse::Button::Right)
+            m_pixels[x + y * WidthPx] = WaterVal;
     }
     else if (event.type == sf::Event::MouseMoved)
     {
@@ -55,32 +55,41 @@ void MyScene::onUpdate(const sf::Time dt)
             const std::size_t pos = x + y * WidthPx;
             char& val = m_pixels[pos];
 
-            if (val == SandVal)
+            if (char* pix = pixAt(x, y + 1); pix && *pix == VoidVal && (val == SandVal || val == WaterVal))
             {
-                if (char* pix = pixAt(x, y + 1); pix && *pix == VoidVal)
-                {
-                    val = VoidVal | DirtyFlag;
-                    *pix = SandVal | DirtyFlag;
-                    setPixel(x, y);
-                    setPixel(x, y + 1);
-                }
-                else if (char* pix = pixAt(x - 1, y + 1); pix && *pix == VoidVal)
-                {
-                    val = VoidVal | DirtyFlag;
-                    *pix = SandVal | DirtyFlag;
-                    setPixel(x, y);
-                    setPixel(x - 1, y + 1);
-                }
-                else if (char* pix = pixAt(x + 1, y + 1); pix && *pix == VoidVal)
-                {
-                    val = VoidVal | DirtyFlag;
-                    *pix = SandVal | DirtyFlag;
-                    setPixel(x, y);
-                    setPixel(x + 1, y + 1);
-                }
+                *pix = val | DirtyFlag;
+                val = VoidVal | DirtyFlag;
+                setPixel(x, y);
+                setPixel(x, y + 1);
             }
-            else if (val == WaterVal)
-            {}
+            else if (char* pix = pixAt(x - 1, y + 1); pix && *pix == VoidVal && (val == SandVal || val == WaterVal))
+            {
+                *pix = val | DirtyFlag;
+                val = VoidVal | DirtyFlag;
+                setPixel(x, y);
+                setPixel(x - 1, y + 1);
+            }
+            else if (char* pix = pixAt(x + 1, y + 1); pix && *pix == VoidVal && (val == SandVal || val == WaterVal))
+            {
+                *pix = val | DirtyFlag;
+                val = VoidVal | DirtyFlag;
+                setPixel(x, y);
+                setPixel(x + 1, y + 1);
+            }
+            else if (char* pix = pixAt(x + 1, y); pix && *pix == VoidVal && val == WaterVal)
+            {
+                *pix = val | DirtyFlag;
+                val = VoidVal | DirtyFlag;
+                setPixel(x, y);
+                setPixel(x + 1, y);
+            }
+            else if (char* pix = pixAt(x + 1, y); pix && *pix == VoidVal && val == WaterVal)
+            {
+                *pix = val | DirtyFlag;
+                val = VoidVal | DirtyFlag;
+                setPixel(x, y);
+                setPixel(x + 1, y);
+            }
         }
     }
 

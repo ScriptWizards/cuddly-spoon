@@ -3,14 +3,9 @@
 #include <Small/Core/SceneManager.hpp>
 #include <iostream>
 
-MyScene::MyScene(int id, int test_argument) :
-    sgl::Scene(id), m_argument(test_argument), m_octagon(80.f, 8)
-{
-    std::cout << "MyScene::MyScene()" << std::endl;
-
-    m_octagon.setFillColor(sf::Color::Green);
-    m_octagon.setPosition(100, 100);
-}
+MyScene::MyScene(int id) :
+    sgl::Scene(id)
+{}
 
 void MyScene::onEvent(const sf::Event& event)
 {
@@ -20,5 +15,5 @@ void MyScene::onEvent(const sf::Event& event)
 
 void MyScene::onRender(sf::RenderTarget& screen, const sf::Transform& transform)
 {
-    screen.draw(m_octagon, transform);
+    // screen.draw(m_octagon, transform);
 }

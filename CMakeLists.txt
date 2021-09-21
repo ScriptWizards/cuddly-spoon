@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(sample-project)
+project(cuddlyspoon)
 
 # do not show console in release
 if(MSVC)
